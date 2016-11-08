@@ -21,12 +21,14 @@ class ViewController: UIViewController {
     @IBOutlet weak var movieLabelThree: UILabel!
     @IBOutlet weak var movieLabelFour: UILabel!
     
+    @IBOutlet weak var hoverLabel: UILabel!
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
         view.backgroundColor = UIColor(red:0.14, green:0.10, blue:0.36, alpha:1.00)
         movieLabels = [movieLabelOne, movieLabelTwo, movieLabelThree ,movieLabelFour]
+        hoverLabel.isHidden = true
         createButton()
         createThankYouLabel()
         createMovieImageView()
@@ -55,6 +57,16 @@ extension ViewController {
         
         let center = sender.location(in: view)
         button.center = center
+        hoverLabel.isHidden = true
+        
+        //When button hovers assign label name to new UILabel
+        for label in movieLabels {
+            if button.frame.intersects(label.frame) {
+                hoverLabel.isHidden = false
+                hoverLabel.text = label.text
+            }
+        }
+        
         
     }
     
@@ -110,7 +122,7 @@ extension ViewController {
             let posterURL = URL(string: posterString)!
             
             self.button.isHidden = true
-            
+        
             self.downloadImage(at: posterURL)
             
             }.resume()
@@ -128,8 +140,9 @@ extension ViewController {
             
             let image = UIImage(data: imageData)!
             
-            self.display(image: image)
-            
+            OperationQueue.main.addOperation {
+                self.display(image: image)
+            }
             }.resume()
     }
     
